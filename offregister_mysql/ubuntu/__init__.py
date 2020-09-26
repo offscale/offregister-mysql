@@ -53,4 +53,4 @@ def setup_user_db1(**kwargs):
         else "",
     )
 
-    return execute_sql(sql, user="root", password=kwargs["MYSQL_PASSWORD"], host=None)
+    execute_sql(sql, user="root", password=kwargs["MYSQL_PASSWORD"], host=None)
