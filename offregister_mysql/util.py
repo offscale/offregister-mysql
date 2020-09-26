@@ -11,8 +11,12 @@ if version[0] == "2":
 def create_user(
     user, mysql_password, create_with_user="root", host="localhost", execute=True
 ):
-    sql = "CREATE USER '{user[name]}'{host} IDENTIFIED BY '{user[password]}';".format(
-        user=user, host="" if host is None else "@{}".format(ensure_quoted(host))
+    sql = "CREATE USER IF NOT EXISTS '{user[name]}'{host} IDENTIFIED BY '{user[password]}';\n{alter}".format(
+        user=user,
+        host="" if host is None else "@{}".format(ensure_quoted(host)),
+        alter="UPDATE mysql.user SET host='localhost' WHERE user = '{user[name]}';".format(user=user)
+        if host is None
+        else "",
     )
     return execute_sql(
         sql=sql,
@@ -29,7 +33,9 @@ def create_database(
     users = database.get("users")
     database = database["name"]
 
-    sql = "CREATE DATABASE {database};".format(database=ensure_quoted(database))
+    sql = "CREATE DATABASE IF NOT EXISTS {database};".format(
+        database=ensure_quoted(database)
+    )
 
     if users is not None:
         sql += " {}".format(
@@ -56,8 +62,13 @@ def execute_sql(sql, user, password, host, execute=True):
     if not execute:
         return sql
 
-    with settings(prompts={'Enter password: ': password,
-                           'mysql> ': ';\n{}\q'.format(sql)}):
+    with settings(
+        prompts={
+            "Enter password: ": password,
+            # Password finds its way to prompt :\ - TODO: Remove password from MySQL history file
+            "mysql> ": ";\n{}\q".format(sql),
+        }
+    ):
         return run(
             "mysql {}".format(
                 " ".join(
@@ -67,7 +78,7 @@ def execute_sql(sql, user, password, host, execute=True):
                             "-h {}".format(ensure_quoted(host)) if host else None,
                             "-u {}".format(ensure_quoted(user)) if user else None,
                             "-p" if password else None,
-                            #"<<< {}".format(sql),  # -e
+                            # "<<< {}".format(sql),  # -e
                         ),
                     ),
                 )
