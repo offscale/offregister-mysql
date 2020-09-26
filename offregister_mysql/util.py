@@ -66,7 +66,7 @@ def execute_sql(sql, user, password, host, execute=True):
         prompts={
             "Enter password: ": password,
             # Password finds its way to prompt :\ - TODO: Remove password from MySQL history file
-            "mysql> ": ";\n{}\q".format(sql),
+            "mysql> ": ";\n{}\q".format(sql.replace(";", ";\n")),
         }
     ):
         return run(
@@ -83,5 +83,5 @@ def execute_sql(sql, user, password, host, execute=True):
                     ),
                 )
             ),
-            quiet=True,
+            quiet=False,
         )
