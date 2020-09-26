@@ -14,7 +14,9 @@ def create_user(
     sql = "CREATE USER IF NOT EXISTS '{user[name]}'{host} IDENTIFIED BY '{user[password]}';\n{alter}".format(
         user=user,
         host="" if host is None else "@{}".format(ensure_quoted(host)),
-        alter="UPDATE mysql.user SET host='localhost' WHERE user = '{user[name]}';".format(user=user)
+        alter="UPDATE mysql.user SET host='localhost' WHERE user = '{user[name]}';".format(
+            user=user
+        )
         if host is None
         else "",
     )
@@ -83,5 +85,5 @@ def execute_sql(sql, user, password, host, execute=True):
                     ),
                 )
             ),
-            quiet=False,
+            quiet=True,
         )

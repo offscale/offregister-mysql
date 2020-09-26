@@ -36,7 +36,11 @@ def install0(**kwargs):
 
 
 def setup_user_db1(**kwargs):
-    kw = {"mysql_password": kwargs["MYSQL_PASSWORD"], "execute": False, "host": "localhost"}
+    kw = {
+        "mysql_password": kwargs["MYSQL_PASSWORD"],
+        "execute": False,
+        "host": "localhost",
+    }
 
     create_user_sql, create_database_sql = partial(create_user, **kw), partial(
         create_database, **kw
