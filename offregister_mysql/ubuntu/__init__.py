@@ -3,11 +3,11 @@ from __future__ import print_function
 from functools import partial
 
 from fabric.context_managers import shell_env
-from fabric.operations import sudo, run
+from fabric.operations import run, sudo
 from offregister_fab_utils.apt import apt_depends
 from offregister_fab_utils.ubuntu.systemd import restart_systemd
 
-from offregister_mysql.util import create_user, create_database, execute_sql
+from offregister_mysql.util import create_database, create_user, execute_sql
 
 
 def install0(**kwargs):
