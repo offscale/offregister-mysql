@@ -1,7 +1,6 @@
 from sys import version
 
 from fabric.context_managers import settings
-from fabric.operations import run
 from offutils import ensure_quoted
 
 if version[0] == "2":
@@ -71,7 +70,7 @@ def execute_sql(sql, user, password, host, execute=True):
             "mysql> ": ";\n{}\q".format(sql.replace(";", ";\n")),
         }
     ):
-        return run(
+        return c.run(
             "mysql {}".format(
                 " ".join(
                     filter(
@@ -85,5 +84,5 @@ def execute_sql(sql, user, password, host, execute=True):
                     ),
                 )
             ),
-            quiet=True,
+            hide=True,
         )
