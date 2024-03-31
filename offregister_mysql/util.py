@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from sys import version
 
 from fabric.context_managers import settings
